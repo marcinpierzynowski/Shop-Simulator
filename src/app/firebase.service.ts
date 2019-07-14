@@ -6,20 +6,27 @@ import { BehaviorSubject } from 'rxjs';
 export interface Customer {
   email: string;
   password: string;
-  created_at: Date | string;
   name: string;
   surname: string;
   address: string;
   contact: string;
-  orders: Array<Order>;
+  orders?: Array<OrderCustomer>;
   imageName: string;
   imageUrl: string;
+  message?: Array<Message>;
 }
 
-export interface Order {
+export interface OrderCustomer {
   products: Array<string>;
   date: Date | string;
   value: number;
+}
+
+export interface Message {
+  date: Date | string;
+  admin: string;
+  description: string;
+  title: string;
 }
 
 @Injectable({
