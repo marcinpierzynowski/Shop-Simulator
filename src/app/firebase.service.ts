@@ -12,6 +12,8 @@ export interface Customer {
   address: string;
   contact: string;
   orders: Array<Order>;
+  imageName: string;
+  imageUrl: string;
 }
 
 export interface Order {
