@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import swal from 'sweetalert2';
+import { FirebaseService, Customer } from '../firebase.service';
 
 @Component({
   selector: 'app-register',
@@ -9,11 +10,17 @@ import swal from 'sweetalert2';
 })
 export class RegisterComponent implements OnInit {
   loginAccountForm: FormGroup;
+  customers: Array<Customer>;
 
-  constructor() { }
+  constructor(
+    private firebaseService: FirebaseService
+  ) { }
 
   ngOnInit() {
     this.initForms();
+    this.firebaseService.customersData.subscribe((c) => {
+      this.customers = c;
+    })
   }
 
   public initForms(): void {
@@ -29,7 +36,14 @@ export class RegisterComponent implements OnInit {
 
   public submit(): void {
     if (this.loginAccountForm.valid) {
-      
+      const customer: Customer = {
+        ...this.loginAccountForm.value
+      }
+      this.customers.push(customer);
+      this.firebaseService.getDataBaseRef('customers').set(this.customers)
+        .then(() => {
+          swal.fire('Rejestracja', 'Klient został dodany', 'success')
+        })
     } else {
       swal.fire('Rejestracja', 'Wypełnij Wszystkie Pola', 'error');
     }
