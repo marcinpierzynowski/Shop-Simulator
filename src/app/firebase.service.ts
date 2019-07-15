@@ -13,7 +13,7 @@ export interface Customer {
   orders?: Array<OrderCustomer>;
   imageName: string;
   imageUrl: string;
-  message?: Array<Message>;
+  messages?: Array<Message>;
 }
 
 export interface OrderCustomer {
