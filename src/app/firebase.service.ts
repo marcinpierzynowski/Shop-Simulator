@@ -25,8 +25,8 @@ export interface OrderCustomer {
 export interface Message {
   date: Date | string;
   admin: string;
-  description: string;
-  title: string;
+  subject?: string;
+  message: string;
 }
 
 @Injectable({
