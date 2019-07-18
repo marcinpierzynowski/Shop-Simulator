@@ -4,6 +4,7 @@ import * as firebase from 'firebase';
 import { BehaviorSubject } from 'rxjs';
 import { Customer } from './models/customer.model';
 import { Product } from './models/product.model';
+import { Notificactions, Reviews, Evaluation } from './models/notification.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,9 @@ import { Product } from './models/product.model';
 export class FirebaseService {
   public customersData: BehaviorSubject<Array<Customer>> = new BehaviorSubject(null);
   public productsData: BehaviorSubject<Array<Product>> = new BehaviorSubject(null);
+  public reviewsData: BehaviorSubject<Array<Reviews>> = new BehaviorSubject(null);
+  public evaluationsData: BehaviorSubject<Array<Evaluation>> = new BehaviorSubject(null);
+  public notificationsData: BehaviorSubject<Notificactions> = new BehaviorSubject(null);
 
   private firebaseShop: any;
   private isAuthorized: boolean;
@@ -32,6 +36,9 @@ export class FirebaseService {
   public init(): void {
     this.getDataBaseRef('customers').on('value', this.customers.bind(this), this.catchError);
     this.getDataBaseRef('products').on('value', this.products.bind(this), this.catchError);
+    this.getDataBaseRef('reviews').on('value', this.reviews.bind(this), this.catchError);
+    this.getDataBaseRef('evaluations').on('value', this.evaluations.bind(this), this.catchError);
+    this.getDataBaseRef('notifications').on('value', this.notifications.bind(this), this.catchError);
   }
 
   public customers(response): void {
@@ -56,6 +63,42 @@ export class FirebaseService {
 
     const products = this.prepareData(data);
     this.productsData.next(products);
+  }
+
+  public reviews(response): void {
+    const data = response.val();
+
+    if (data === null) {
+      this.reviewsData.next([]);
+      return;
+    }
+
+    const reviews = this.prepareData(data);
+    this.reviewsData.next(reviews);
+  }
+
+  public evaluations(response): void {
+    const data = response.val();
+
+    if (data === null) {
+      this.evaluationsData.next([]);
+      return;
+    }
+
+    const evaluations = this.prepareData(data);
+    this.evaluationsData.next(evaluations);
+  }
+
+  public notifications(response): void {
+    const data = response.val();
+
+    if (data === null) {
+      this.notificationsData.next(null);
+      return;
+    }
+
+    const notifications = data;
+    this.notificationsData.next(notifications);
   }
 
   public prepareData(data) {

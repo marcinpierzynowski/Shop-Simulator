@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseService } from '../firebase.service';
-import { Product, Reviews } from '../models/product.model';
+import { Product, Evaluation as EvP, Reviews as RP } from '../models/product.model';
 import swal from 'sweetalert2';
 import { Customer } from '../models/customer.model';
 import { DatePipe } from '@angular/common';
+import { Notificactions, Reviews, Evaluation } from '../models/notification.model';
 
 @Component({
   selector: 'app-products',
@@ -16,6 +17,11 @@ export class ProductsComponent implements OnInit {
   public evaluation = 1;
   public customers: Array<Customer>;
   public customer = '';
+
+  public notifications: Notificactions;
+  public reviews: Array<Reviews>;
+  public evaluations: Array<Evaluation>;
+
   public desc = '';
 
   constructor(
@@ -33,6 +39,18 @@ export class ProductsComponent implements OnInit {
 
     this.firebaseService.customersData.subscribe(c => {
       this.customers = c;
+    });
+
+    this.firebaseService.evaluationsData.subscribe(c => {
+      this.evaluations = c;
+    });
+
+    this.firebaseService.reviewsData.subscribe(c => {
+      this.reviews = c;
+    });
+
+    this.firebaseService.notificationsData.subscribe(c => {
+      this.notifications = c;
     });
   }
 
@@ -63,13 +81,28 @@ export class ProductsComponent implements OnInit {
       }
     }
     this.firebaseService.getDataBaseRef('products').
-        child(indexPr).child('reviewsCustomer').child('evaluations').set(data)
-        .then(() => swal.fire('Dodanie oceny', 'Ocena została dodana', 'success'));
+      child(indexPr).child('reviewsCustomer').child('evaluations').set(data)
+      .then(() => swal.fire('Dodanie oceny', 'Ocena została dodana', 'success'));
+    this.addEvalData(data.evaluation, ref);  
   }
 
-  public addOpinion( ref: string): void {
+  public addEvalData(rate, ref) {
+    const id = this.evaluations.length === 0 ? 1 : this.evaluations[this.evaluations.length - 1].id + 1;
+    this.evaluations.push({
+      rate,
+      ref,
+      id,
+      date: this.datePipe.transform(new Date(), 'yyyy-MM-dd')
+    });
+
+    this.firebaseService.getDataBaseRef('evaluations').set(this.evaluations);
+    this.notifications.evaluations += 1;
+    this.firebaseService.getDataBaseRef('notifications').set(this.notifications);
+  }
+
+  public addOpinion(ref: string): void {
     const cust = this.customers.find(c => c.email === this.customer);
-    const data: Reviews = {
+    const data: RP = {
       amount: 1,
       desc: [{
         email: this.customer,
@@ -88,8 +121,24 @@ export class ProductsComponent implements OnInit {
       }
     }
     this.firebaseService.getDataBaseRef('products')
-    .child(indexPr).child('reviewsCustomer').child('reviews').set(data)
+      .child(indexPr).child('reviewsCustomer').child('reviews').set(data)
       .then(() => swal.fire('Dodanie opinii', 'Opinia została dodana', 'success'));
+    this.addOpinionData(this.desc, this.customer, ref);
+  }
+
+  public addOpinionData(desc, user, ref) {
+    const id = this.reviews.length === 0 ? 1 : this.reviews[this.reviews.length - 1].id + 1;
+    this.reviews.push({
+      desc,
+      user,
+      ref,
+      id,
+      date: this.datePipe.transform(new Date(), 'yyyy-MM-dd')
+    });
+
+    this.firebaseService.getDataBaseRef('reviews').set(this.reviews);
+    this.notifications.reviews += 1;
+    this.firebaseService.getDataBaseRef('notifications').set(this.notifications);
   }
 
 }
