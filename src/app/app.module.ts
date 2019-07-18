@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import { RegisterComponent } from './register/register.component';
 import { DatePipe, CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProductsComponent } from './products/products.component';
 
 @NgModule({
    declarations: [
       AppComponent,
-      RegisterComponent
+      RegisterComponent,
+      ProductsComponent
    ],
    imports: [
       BrowserModule,
@@ -22,6 +24,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
    bootstrap: [
       AppComponent
    ],
-   providers: [DatePipe, CommonModule]
+   providers: [
+      DatePipe,
+      CommonModule
+   ]
 })
 export class AppModule { }

@@ -1,0 +1,56 @@
+<div style="margin: 20px 0" class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">REF</span>
+  </div>
+  <input #input type="text" class="form-control" (input)="filter(input)" placeholder="Numer Referencyjny"
+    aria-label="Username" aria-describedby="basic-addon1">
+</div>
+<div [style.background]="'#333333'" *ngIf="products && products.length > 0">
+  <div [style.margin-bottom]="'150px'" *ngFor="let product of cpProducts" class="card">
+    <img [src]="product.image.url" width="100" height="200" style="width: 200px !important" class="card-img-top"
+      alt="...">
+    <div class="card-body">
+      <h5 class="card-title">Nazwa: {{ product.name }}</h5>
+      <h5 class="card-title">Numer Referencyjny {{ product.ref }}</h5>
+      <p class="card-text">Cena: {{ product.price }}</p>
+      <p class="card-text">Promocja: {{ product.promotion }}%</p>
+      <hr />
+      <h4>Dodaj Ocene</h4>
+
+      <div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01">Ocena:</label>
+          </div>
+          <select (input)="setEval($event)" class="custom-select" id="inputGroupSelect01">
+            <option selected value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" [style.margin-top]="'10px'" (click)="addEvaluation(product.ref)">Dodaj
+          Ocenę</button>
+      </div>
+      <hr />
+      <h4>Dodaj Opinię</h4>
+
+      <div *ngIf="customers && customers.length > 0">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01">Użytkownik</label>
+          </div>
+          <select [(ngModel)]="customer" class="custom-select" id="inputGroupSelect01">
+            <option *ngFor="let customer of customers; let i = index" [value]="customer.email">{{ customer.email }}
+            </option>
+          </select>
+        </div>
+        <textarea rows="5" type="text" class="form-control" placeholder="Opinia" aria-label="Username"
+          aria-describedby="basic-addon1" [(ngModel)]="desc"></textarea>
+        <button class="btn btn-primary" [style.margin-top]="'10px'" (click)="addOpinion(product.ref)">Dodaj
+          Opinie</button>
+      </div>
+    </div>
+  </div>
+</div>

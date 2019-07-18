@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import swal from 'sweetalert2';
-import { FirebaseService, Customer } from '../firebase.service';
+import { FirebaseService } from '../firebase.service';
+import { Customer } from '../models/customer.model';
 
 @Component({
   selector: 'app-register',

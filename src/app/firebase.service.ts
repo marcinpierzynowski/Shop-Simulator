@@ -2,38 +2,15 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import * as firebase from 'firebase';
 import { BehaviorSubject } from 'rxjs';
-
-export interface Customer {
-  email: string;
-  password: string;
-  name: string;
-  surname: string;
-  address: string;
-  contact: string;
-  orders?: Array<OrderCustomer>;
-  imageName: string;
-  imageUrl: string;
-  messages?: Array<Message>;
-}
-
-export interface OrderCustomer {
-  products: Array<string>;
-  date: Date | string;
-  value: number;
-}
-
-export interface Message {
-  date: Date | string;
-  admin: string;
-  subject?: string;
-  message: string;
-}
+import { Customer } from './models/customer.model';
+import { Product } from './models/product.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
   public customersData: BehaviorSubject<Array<Customer>> = new BehaviorSubject(null);
+  public productsData: BehaviorSubject<Array<Product>> = new BehaviorSubject(null);
 
   private firebaseShop: any;
   private isAuthorized: boolean;
@@ -54,6 +31,7 @@ export class FirebaseService {
 
   public init(): void {
     this.getDataBaseRef('customers').on('value', this.customers.bind(this), this.catchError);
+    this.getDataBaseRef('products').on('value', this.products.bind(this), this.catchError);
   }
 
   public customers(response): void {
@@ -66,6 +44,18 @@ export class FirebaseService {
 
     const customers = this.prepareData(data);
     this.customersData.next(customers);
+  }
+
+  public products(response): void {
+    const data = response.val();
+
+    if (data === null) {
+      this.productsData.next([]);
+      return;
+    }
+
+    const products = this.prepareData(data);
+    this.productsData.next(products);
   }
 
   public prepareData(data) {
