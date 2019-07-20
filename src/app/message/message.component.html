@@ -1,0 +1,19 @@
+<div class="message">
+  <div *ngIf="customers && customers.length > 0">
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="inputGroupSelect01">Użytkownik</label>
+      </div>
+      <select [(ngModel)]="customer" class="custom-select" id="inputGroupSelect01">
+        <option *ngFor="let customer of customers; let i = index" [value]="customer.email">{{ customer.email }}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Example textarea</label>
+    <textarea [(ngModel)]="desc" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+  </div>
+
+  <button (click)="send()" class="btn btn-primary">Wyślij</button>
+</div>

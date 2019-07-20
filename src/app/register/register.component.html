@@ -37,5 +37,10 @@
     <input type="checkbox" class="form-check-input" id="exampleCheck1">
     <label class="form-check-label" for="exampleCheck1">Check me out</label>
   </div>
+  <select (input)="setPicture($event)" class="custom-select" id="inputGroupSelect01">
+   <option *ngFor="let url of urls; let i = index" [value]="url">
+     {{ i + 1 }} - zdjęcie
+   </option>
+  </select>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>

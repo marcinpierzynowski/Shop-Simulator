@@ -1,12 +1,8 @@
-export interface GroupNotification {
-    name: string;
-}
-
-export interface Notificactions {
+export interface Notificaction {
     date: Date | string;
-    reviews: number;
-    evaluations: number;
-    messages: number;
+    reviews?: number;
+    evaluations?: number;
+    messages?: number;
 }
 
 export interface Reviews {

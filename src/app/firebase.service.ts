@@ -4,7 +4,8 @@ import * as firebase from 'firebase';
 import { BehaviorSubject } from 'rxjs';
 import { Customer } from './models/customer.model';
 import { Product } from './models/product.model';
-import { Notificactions, Reviews, Evaluation } from './models/notification.model';
+import { Notificaction, Reviews, Evaluation } from './models/notification.model';
+import { Message } from './models/message.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class FirebaseService {
   public productsData: BehaviorSubject<Array<Product>> = new BehaviorSubject(null);
   public reviewsData: BehaviorSubject<Array<Reviews>> = new BehaviorSubject(null);
   public evaluationsData: BehaviorSubject<Array<Evaluation>> = new BehaviorSubject(null);
-  public notificationsData: BehaviorSubject<Notificactions> = new BehaviorSubject(null);
+  public notificationData: BehaviorSubject<Notificaction> = new BehaviorSubject(null);
+  public messagesData: BehaviorSubject<Array<Message>> = new BehaviorSubject(null);
 
   private firebaseShop: any;
   private isAuthorized: boolean;
@@ -38,7 +40,8 @@ export class FirebaseService {
     this.getDataBaseRef('products').on('value', this.products.bind(this), this.catchError);
     this.getDataBaseRef('reviews').on('value', this.reviews.bind(this), this.catchError);
     this.getDataBaseRef('evaluations').on('value', this.evaluations.bind(this), this.catchError);
-    this.getDataBaseRef('notifications').on('value', this.notifications.bind(this), this.catchError);
+    this.getDataBaseRef('notification').on('value', this.notification.bind(this), this.catchError);
+    this.getDataBaseRef('messages').on('value', this.messages.bind(this), this.catchError);
   }
 
   public customers(response): void {
@@ -89,16 +92,28 @@ export class FirebaseService {
     this.evaluationsData.next(evaluations);
   }
 
-  public notifications(response): void {
+  public notification(response): void {
     const data = response.val();
 
     if (data === null) {
-      this.notificationsData.next(null);
+      this.notificationData.next(null);
       return;
     }
 
-    const notifications = data;
-    this.notificationsData.next(notifications);
+    const notification = data;
+    this.notificationData.next(notification);
+  }
+
+  public messages(response): void {
+    const data = response.val();
+
+    if (data === null) {
+      this.messagesData.next([]);
+      return;
+    }
+
+    const messages = data;
+    this.messagesData.next(messages);
   }
 
   public prepareData(data) {

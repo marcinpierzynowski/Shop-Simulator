@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FirebaseService } from '../firebase.service';
-import { Product, Evaluation as EvP, Reviews as RP } from '../models/product.model';
-import swal from 'sweetalert2';
-import { Customer } from '../models/customer.model';
 import { DatePipe } from '@angular/common';
-import { Notificactions, Reviews, Evaluation } from '../models/notification.model';
+
+import { FirebaseService } from '../firebase.service';
+import { Product, Reviews as RP } from '../models/product.model';
+import { Customer } from '../models/customer.model';
+import { Notificaction, Reviews, Evaluation } from '../models/notification.model';
+
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-products',
@@ -18,7 +20,7 @@ export class ProductsComponent implements OnInit {
   public customers: Array<Customer>;
   public customer = '';
 
-  public notifications: Notificactions;
+  public notification: Notificaction;
   public reviews: Array<Reviews>;
   public evaluations: Array<Evaluation>;
 
@@ -49,8 +51,8 @@ export class ProductsComponent implements OnInit {
       this.reviews = c;
     });
 
-    this.firebaseService.notificationsData.subscribe(c => {
-      this.notifications = c;
+    this.firebaseService.notificationData.subscribe(c => {
+      this.notification = c;
     });
   }
 
@@ -83,7 +85,7 @@ export class ProductsComponent implements OnInit {
     this.firebaseService.getDataBaseRef('products').
       child(indexPr).child('reviewsCustomer').child('evaluations').set(data)
       .then(() => swal.fire('Dodanie oceny', 'Ocena została dodana', 'success'));
-    this.addEvalData(data.evaluation, ref);  
+    this.addEvalData(data.evaluation, ref);
   }
 
   public addEvalData(rate, ref) {
@@ -96,8 +98,25 @@ export class ProductsComponent implements OnInit {
     });
 
     this.firebaseService.getDataBaseRef('evaluations').set(this.evaluations);
-    this.notifications.evaluations += 1;
-    this.firebaseService.getDataBaseRef('notifications').set(this.notifications);
+    if (!this.notification) {
+      this.notification = {
+        ...this.notification,
+        date: this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
+        evaluations: 1
+      };
+    } else {
+      if (!this.notification.evaluations) {
+        this.notification = {
+          ...this.notification,
+          date: this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
+          evaluations: 1
+        };
+      } else {
+        this.notification.evaluations += 1;
+        this.notification.date = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+      }
+    }
+    this.firebaseService.getDataBaseRef('notification').set(this.notification);
   }
 
   public addOpinion(ref: string): void {
@@ -116,7 +135,7 @@ export class ProductsComponent implements OnInit {
     const indexPr = this.products.findIndex(p => p.ref === ref).toString();
     if (prod.reviewsCustomer) {
       if (prod.reviewsCustomer.reviews) {
-        data.amount += data.amount;
+        data.amount += prod.reviewsCustomer.reviews.amount;
         data.desc = [...prod.reviewsCustomer.reviews.desc, ...data.desc];
       }
     }
@@ -137,8 +156,25 @@ export class ProductsComponent implements OnInit {
     });
 
     this.firebaseService.getDataBaseRef('reviews').set(this.reviews);
-    this.notifications.reviews += 1;
-    this.firebaseService.getDataBaseRef('notifications').set(this.notifications);
-  }
 
+    if (!this.notification) {
+      this.notification = {
+        ...this.notification,
+        reviews: 1,
+        date: this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
+      };
+    } else {
+      if (!this.notification.reviews) {
+        this.notification = {
+          ...this.notification,
+          reviews: 1,
+          date: this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
+        };
+      } else {
+        this.notification.reviews += 1;
+        this.notification.date = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+      }
+      this.firebaseService.getDataBaseRef('notification').set(this.notification);
+    }
+  }
 }

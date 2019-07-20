@@ -4,5 +4,15 @@ export interface Message {
     desc: string;
     read: boolean;
     id: number;
-    admin: string;
+    name: string;
+    surname: string;
+    url: string;
+    answer?: Answer;
+}
+
+export interface Answer {
+    email: string;
+    date: string;
+    desc: string;
+    url: string;
 }
