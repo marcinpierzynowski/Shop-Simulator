@@ -85,16 +85,21 @@ export class ProductsComponent implements OnInit {
     this.firebaseService.getDataBaseRef('products').
       child(indexPr).child('reviewsCustomer').child('evaluations').set(data)
       .then(() => swal.fire('Dodanie oceny', 'Ocena została dodana', 'success'));
-    this.addEvalData(data.evaluation, ref);
+    this.addEvalData(product);
   }
 
-  public addEvalData(rate, ref) {
+  public addEvalData(product: Product) {
+    const cust = this.customers.find(c => c.email === this.customer);
+    const { ref, image } = product;
     const id = this.evaluations.length === 0 ? 1 : this.evaluations[this.evaluations.length - 1].id + 1;
     this.evaluations.push({
-      rate,
+      rate: this.evaluation,
       ref,
       id,
-      date: this.datePipe.transform(new Date(), 'yyyy-MM-dd')
+      date: this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
+      urlProduct: image.url,
+      urlCustomer: cust.imageUrl,
+      email: cust.email
     });
 
     this.firebaseService.getDataBaseRef('evaluations').set(this.evaluations);
@@ -142,17 +147,20 @@ export class ProductsComponent implements OnInit {
     this.firebaseService.getDataBaseRef('products')
       .child(indexPr).child('reviewsCustomer').child('reviews').set(data)
       .then(() => swal.fire('Dodanie opinii', 'Opinia została dodana', 'success'));
-    this.addOpinionData(this.desc, this.customer, ref);
+    this.addOpinionData(this.desc, cust, prod);
   }
 
-  public addOpinionData(desc, user, ref) {
+  public addOpinionData(desc, user, product: Product) {
+    const { ref, image } = product;
     const id = this.reviews.length === 0 ? 1 : this.reviews[this.reviews.length - 1].id + 1;
     this.reviews.push({
       desc,
-      user,
       ref,
       id,
-      date: this.datePipe.transform(new Date(), 'yyyy-MM-dd')
+      date: this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
+      urlProduct: image.url,
+      urlCustomer: user.imageUrl,
+      email: user.email
     });
 
     this.firebaseService.getDataBaseRef('reviews').set(this.reviews);

@@ -8,13 +8,15 @@ import { DatePipe, CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductsComponent } from './products/products.component';
 import { MessageComponent } from './message/message.component';
+import { OrdersComponent } from './orders/orders.component';
 
 @NgModule({
    declarations: [
       AppComponent,
       RegisterComponent,
       ProductsComponent,
-      MessageComponent
+      MessageComponent,
+      OrdersComponent
    ],
    imports: [
       BrowserModule,

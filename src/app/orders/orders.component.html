@@ -1,0 +1,35 @@
+<h3>Wybierz klienta</h3>
+<select [(ngModel)]="customer" class="custom-select" id="inputGroupSelect01">
+    <option *ngFor="let customer of customers; let i = index" [value]="customer.email">{{ customer.email }}
+    </option>
+  </select>
+<hr />
+
+<button (click)="sendOrder()" class="btn btn-danger">Wyślij</button>
+<h3>Produkty</h3>
+<table *ngIf="products" class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Zdjęcie</th>
+      <th scope="col">Nazwa</th>
+      <th scope="col">Cena</th>
+      <th scope="col">Akcje</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of products; let i = index">
+      <th scope="row">{{ i+1 }}</th>
+      <td><img height="50" width="50" [src]="product.image.url"> </td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.price }}</td>
+      <td>
+        <p>ilość {{ count[i] }}</p>
+        <div>
+          <i (click)="add(i)" class="fas fa-plus-circle"></i>
+          <i (click)="remove(i)" class="fas fa-minus-circle"></i>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

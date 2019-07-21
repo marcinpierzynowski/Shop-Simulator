@@ -14,7 +14,7 @@ export interface Customer {
 export interface OrderCustomer {
     products: Array<string>;
     date: Date | string;
-    value: number;
+    price: number;
 }
 
 export interface Message {

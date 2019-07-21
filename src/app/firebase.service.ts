@@ -6,6 +6,7 @@ import { Customer } from './models/customer.model';
 import { Product } from './models/product.model';
 import { Notificaction, Reviews, Evaluation } from './models/notification.model';
 import { Message } from './models/message.model';
+import { Order } from './models/order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class FirebaseService {
   public evaluationsData: BehaviorSubject<Array<Evaluation>> = new BehaviorSubject(null);
   public notificationData: BehaviorSubject<Notificaction> = new BehaviorSubject(null);
   public messagesData: BehaviorSubject<Array<Message>> = new BehaviorSubject(null);
+  public ordersData: BehaviorSubject<Array<Order>> = new BehaviorSubject(null);
 
   private firebaseShop: any;
   private isAuthorized: boolean;
@@ -42,6 +44,7 @@ export class FirebaseService {
     this.getDataBaseRef('evaluations').on('value', this.evaluations.bind(this), this.catchError);
     this.getDataBaseRef('notification').on('value', this.notification.bind(this), this.catchError);
     this.getDataBaseRef('messages').on('value', this.messages.bind(this), this.catchError);
+    this.getDataBaseRef('orders').on('value', this.orders.bind(this), this.catchError);
   }
 
   public customers(response): void {
@@ -114,6 +117,18 @@ export class FirebaseService {
 
     const messages = data;
     this.messagesData.next(messages);
+  }
+
+  public orders(response): void {
+    const data = response.val();
+
+    if (data === null) {
+      this.ordersData.next([]);
+      return;
+    }
+
+    const ordersData = this.prepareData(data);
+    this.ordersData.next(ordersData);
   }
 
   public prepareData(data) {
