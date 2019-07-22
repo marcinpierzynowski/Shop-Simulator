@@ -10,6 +10,7 @@ export interface Order {
     address: string;
     contact: string;
     url: string;
+    ref: string;
 }
 
 export interface ProductData {

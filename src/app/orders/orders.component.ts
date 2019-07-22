@@ -27,7 +27,8 @@ export class OrdersComponent implements OnInit {
     surname: '',
     address: '',
     contact: '',
-    url: ''
+    url: '',
+    ref: ''
   };
   orders: Array<Order>;
 
@@ -79,11 +80,33 @@ export class OrdersComponent implements OnInit {
       surname: customer.surname,
       address: customer.address,
       contact: customer.contact,
-      url: customer.imageUrl
+      url: customer.imageUrl,
+      ref: this.generateRandomNumber()
     };
     this.orders.push(this.order);
     this.firebaseService.getDataBaseRef('orders').set(this.orders)
       .then(() => swal.fire('Zamówienie', 'Zamówienie zostało złożoen', 'success'));
+  }
+
+  public generateRandomNumber(): string {
+    // tslint:disable-next-line:one-variable-per-declaration
+    let ref, isUnique;
+
+    if (this.orders.length > 0) {
+      do {
+        ref = this.getRandomNumber();
+        isUnique = this.orders.find(ord => ord.ref === ref);
+      } while (isUnique);
+    } else {
+      ref = this.getRandomNumber();
+    }
+    return ref;
+  }
+
+  public getRandomNumber(): string {
+    let value = '';
+    for (let i = 0; i < 9; i++) { value += (Math.floor(Math.random() * 9) + 1).toString(); }
+    return value;
   }
 
   add(index) {
