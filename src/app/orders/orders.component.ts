@@ -28,7 +28,8 @@ export class OrdersComponent implements OnInit {
     address: '',
     contact: '',
     url: '',
-    ref: ''
+    ref: '',
+    executed: false
   };
   orders: Array<Order>;
 
@@ -81,7 +82,8 @@ export class OrdersComponent implements OnInit {
       address: customer.address,
       contact: customer.contact,
       url: customer.imageUrl,
-      ref: this.generateRandomNumber()
+      ref: this.generateRandomNumber(),
+      executed: false
     };
     this.orders.push(this.order);
     this.firebaseService.getDataBaseRef('orders').set(this.orders)

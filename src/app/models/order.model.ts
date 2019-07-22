@@ -11,6 +11,7 @@ export interface Order {
     contact: string;
     url: string;
     ref: string;
+    executed: boolean;
 }
 
 export interface ProductData {
